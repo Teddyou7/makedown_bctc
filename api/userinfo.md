@@ -1,125 +1,145 @@
-### API 接口文档
+以下是完整的API文档，包括`retrieve_servers`、`battle_list`和`battle_details`模式的说明、请求参数及响应内容的详细说明。
 
-#### 概述
+## API文档
 
-此API提供了三个主要的端点，用于检索服务器信息、获取战斗列表和战斗详细信息。所有请求和响应均为JSON格式。
+### 基础信息
+- **URL**: `/userinfo/api`
+- **方法**: `GET`
+- **支持的模式**: `retrieve_servers`, `battle_list`, `battle_details`
 
-### 端点
+### 请求模式
 
-#### 1. 检索服务器信息
+#### 1. 检索服务器 (`retrieve_servers`)
 
-- **URL:** `/userinfo/api?mode=retrieve_servers`
-- **方法:** `GET`
-- **请求参数:** 无
-- **响应格式:**
+##### 请求
+- **模式**: `retrieve_servers`
+- **请求参数**: 无
+
+##### 响应
+- **响应内容**: 服务器名称列表
 
 ```json
 [
-    "dnz1",
-    "hongjing1",
+    "server1",
+    "server2",
     ...
 ]
 ```
 
-- **说明:** 返回所有包含 `_combat_info` 表的服务器名称。
+#### 2. 战斗列表 (`battle_list`)
 
-#### 2. 获取战斗列表
+##### 请求
+- **模式**: `battle_list`
+- **请求参数**:
+  - `steamid` (必需): 用户的Steam ID
+  - `server` (必需): 服务器名称
+  - `data` (必需): 数据类型 (`last_round`, `second_last_round`, `all_data`)
+  - `limit` (可选): 返回数据条目数，默认200，最大值200
+  - `token` (可选): 用于请求超过7天的数据
+  - `time` (可选): 天数范围，默认为3天
 
-- **URL:** `/userinfo/api?mode=battle_list`
-- **方法:** `GET`
-- **请求参数:**
-
-  | 参数名      | 类型   | 必填 | 示例值          | 描述                               |
-  | ----------- | ------ | ---- | --------------- | ---------------------------------- |
-  | steamid     | string | 是   | 76561199105097854 | 用户的 SteamID                      |
-  | server      | string | 是   | dnz1            | 服务器名称                         |
-  | data        | string | 是   | last_round      | 数据类型（`last_round`, `second_last_round`, `all_data`） |
-  | limit       | int    | 否   | 200             | 返回的数据条数，默认 200，最大 2000 |
-  | token       | string | 否   | xxx             | 预定义的令牌（当查询时间超过7天时需要） |
-  | time        | int    | 否   | 3               | 查询最近几天的数据，默认3天 |
-
-- **响应格式:**
-
-```json
-[
-    {
-        "id": 551942,
-        "operator_steamid": "76561199105097854",
-        "operator_nickname": " 雪狼001",
-        "action": "ActualDamage",
-        "target_steamid": "76561199105097854",
-        "target_nickname": " 雪狼001",
-        "weapon": "Soldier_RU_Marksman_Desert",
-        "health": 135,
-        "action_time": "2024-05-16 13:11:13.806"
-    },
-    ...
-]
-```
-
-- **说明:** 返回匹配查询条件的战斗记录。
-
-#### 3. 获取战斗详细信息
-
-- **URL:** `/userinfo/api?mode=battle_details`
-- **方法:** `GET`
-- **请求参数:**
-
-  | 参数名      | 类型   | 必填 | 示例值          | 描述                               |
-  | ----------- | ------ | ---- | --------------- | ---------------------------------- |
-  | steamid     | string | 是   | 76561199105097854 | 用户的 SteamID                      |
-  | server      | string | 是   | dnz1            | 服务器名称                         |
-  | data        | string | 是   | last_round      | 数据类型（`last_round`, `second_last_round`, `all_data`） |
-  | limit       | int    | 否   | 200             | 返回的数据条数，默认 200，最大 2000 |
-  | token       | string | 否   | xxx             | 预定义的令牌（当查询时间超过7天时需要） |
-  | time        | int    | 否   | 3               | 查询最近几天的数据，默认3天 |
-
-- **响应格式:**
+##### 响应
+- **响应内容**: 包含各种击杀和统计数据的JSON对象
 
 ```json
 {
-    "bayonet_kills": 0,
+    "bayonet_kills": 3,
     "grenade_kills": 0,
     "light_rocket_kills": 0,
     "heavy_rocket_kills": 0,
     "explosive_kills": 0,
     "rifle_grenade_kills": 0,
-    "rifle_kills": 0,
-    "light_machine_gun_kills": 0,
-    "universal_machine_gun_kills": 0,
-    "precision_shooter_kills": 0,
-    "pistol_kills": 0,
-    "headshots": 0,
-    "total_kills": 0,
-    "total_deaths": 0,
-    "total_hits": 0,
-    "total_hits_taken": 0,
-    "total_rescues": 0,
-    "total_rescued": 0,
-    "total_entries": 0,
-    "headshot_rate": 0
+    "rifle_kills": 8,
+    "light_machine_gun_kills": 49,
+    "universal_machine_gun_kills": 1,
+    "precision_shooter_kills": 51,
+    "pistol_kills": 3,
+    "headshots": 10,
+    "total_actual_damage_hits": 102,
+    "total_deaths": 15,
+    "total_hits_taken": 15,
+    "total_rescues": 3,
+    "total_rescued": 2,
+    "total_entries": 200,
+    "total_kills": 50,
+    "other_kills": 30,
+    "headshot_rate": 0.09803921568627451
 }
 ```
 
-### 字段说明
+##### 响应字段翻译
+- **bayonet_kills**: 匕首击杀次数
+- **grenade_kills**: 手榴弹击杀次数
+- **light_rocket_kills**: 轻型火箭筒击杀次数
+- **heavy_rocket_kills**: 重型火箭筒击杀次数
+- **explosive_kills**: 爆炸物击杀次数（如C4或IED）
+- **rifle_grenade_kills**: 枪械榴弹击杀次数
+- **rifle_kills**: 步枪击杀次数
+- **light_machine_gun_kills**: 轻机枪击杀次数
+- **universal_machine_gun_kills**: 通用机枪击杀次数
+- **precision_shooter_kills**: 狙击枪击杀次数
+- **pistol_kills**: 手枪击杀次数
+- **headshots**: 爆头次数
+- **total_actual_damage_hits**: 实际伤害命中总次数
+- **total_deaths**: 阵亡总次数
+- **total_hits_taken**: 被命中总次数
+- **total_rescues**: 救护总次数
+- **total_rescued**: 被救护总次数
+- **total_entries**: 数据条目总数
+- **total_kills**: 总击杀次数
+- **other_kills**: 其他击杀次数
+- **headshot_rate**: 爆头率（爆头次数/实际伤害命中总次数）
 
-- `bayonet_kills`: 匕首击杀次数
-- `grenade_kills`: 手榴弹击杀次数
-- `light_rocket_kills`: 轻型火箭筒击杀次数
-- `heavy_rocket_kills`: 重型火箭筒击杀次数
-- `explosive_kills`: C4或IED击杀次数
-- `rifle_grenade_kills`: 枪械榴弹击杀次数
-- `rifle_kills`: 步枪击杀次数
-- `light_machine_gun_kills`: 班用轻机枪击杀次数
-- `universal_machine_gun_kills`: 通用机枪击杀次数
-- `precision_shooter_kills`: 狙击枪击杀次数
-- `pistol_kills`: 手枪击杀次数
-- `headshots`: 爆头次数
-- `total_kills`: 击杀总次数
-- `total_deaths`: 阵亡总次数
-- `total_hits`: 命中总次数
-- `total_hits_taken`: 被命中总次数
-- `total_rescues`: 救护总次数
-- `total_rescued`: 被救护总次数
-- `total_entries`: 数据条目总数
-- `headshot_rate`: 爆头率
+#### 3. 战斗详细 (`battle_details`)
+
+##### 请求
+- **模式**: `battle_details`
+- **请求参数**:
+  - `steamid` (必需): 用户的Steam ID
+  - `server` (必需): 服务器名称
+  - `data` (必需): 数据类型 (`last_round`, `second_last_round`, `all_data`)
+  - `limit` (可选): 返回数据条目数，默认200，最大值200
+  - `token` (可选): 用于请求超过7天的数据
+  - `time` (可选): 天数范围，默认为3天
+
+##### 响应
+- **响应内容**: 包含各种击杀和统计数据的JSON对象，结构与 `battle_list` 模式相同
+
+### 错误响应
+- **错误响应**: JSON对象，包含错误信息
+
+```json
+{
+    "error": "Invalid mode"
+}
+```
+- **错误类型**:
+  - `Invalid mode`: 非法的请求模式
+  - `Token required for data older than 7 days`: 请求超过7天的数据需要提供有效的token
+  - `Invalid data type`: 非法的数据类型
+
+### 示例请求
+- **检索服务器**:
+  ```
+  GET /userinfo/api?mode=retrieve_servers
+  ```
+
+- **战斗列表**:
+  ```
+  GET /userinfo/api?mode=battle_list&steamid=76561198390104346&server=qingya1&data=all_data&limit=100&time=7
+  ```
+
+- **战斗详细**:
+  ```
+  GET /userinfo/api?mode=battle_details&steamid=76561198390104346&server=qingya1&data=last_round&limit=50
+  ```
+
+### 运行代码
+确保Flask应用在指定端口运行，默认端口为4599：
+
+```python
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=4599)
+```
+
+这份API文档涵盖了`retrieve_servers`、`battle_list`和`battle_details`模式的请求和响应详细信息，帮助开发者正确使用API并理解各字段的含义。
