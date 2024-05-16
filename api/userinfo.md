@@ -1,6 +1,5 @@
-以下是完整的API文档，包括`retrieve_servers`、`battle_list`和`battle_details`模式的说明、请求参数及响应内容的详细说明。
 
-## API文档
+## 单用户战斗统计信息API文档
 
 ### 基础信息
 - **URL**: `/userinfo/api`
@@ -133,13 +132,3 @@
   ```
   GET /userinfo/api?mode=battle_details&steamid=76561198390104346&server=qingya1&data=last_round&limit=50
   ```
-
-### 运行代码
-确保Flask应用在指定端口运行，默认端口为4599：
-
-```python
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=4599)
-```
-
-这份API文档涵盖了`retrieve_servers`、`battle_list`和`battle_details`模式的请求和响应详细信息，帮助开发者正确使用API并理解各字段的含义。
