@@ -35,8 +35,3 @@ Content-type: text/plain; charset=UTF8
 
 null
 ```
-
-## 注意事项
-- 请确保在执行该脚本的服务器上已安装并配置了 `curl` 和 `jq` 命令。
-- 确保正确设置了 Steam API 密钥，并将其替换为您的实际密钥。
-- 该脚本缓存的查询结果会保存在 `/var/www/api/tmp/SteamDuration/` 目录下，请确保该目录存在并具有适当的权限。
