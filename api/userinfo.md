@@ -1,8 +1,6 @@
-好的，这里是一个完整的接口文档，包含了所有的请求和响应格式，以及每个字段的详细说明。
+### API 接口文档
 
-## API 接口文档
-
-### 概述
+#### 概述
 
 此API提供了三个主要的端点，用于检索服务器信息、获取战斗列表和战斗详细信息。所有请求和响应均为JSON格式。
 
@@ -37,7 +35,8 @@
   | server      | string | 是   | dnz1            | 服务器名称                         |
   | data        | string | 是   | last_round      | 数据类型（`last_round`, `second_last_round`, `all_data`） |
   | limit       | int    | 否   | 200             | 返回的数据条数，默认 200，最大 2000 |
-  | token       | string | 是   | xxx             | 预定义的令牌                        |
+  | token       | string | 否   | xxx             | 预定义的令牌（当查询时间超过7天时需要） |
+  | time        | int    | 否   | 3               | 查询最近几天的数据，默认3天 |
 
 - **响应格式:**
 
@@ -72,7 +71,8 @@
   | server      | string | 是   | dnz1            | 服务器名称                         |
   | data        | string | 是   | last_round      | 数据类型（`last_round`, `second_last_round`, `all_data`） |
   | limit       | int    | 否   | 200             | 返回的数据条数，默认 200，最大 2000 |
-  | token       | string | 是   | xxx             | 预定义的令牌                        |
+  | token       | string | 否   | xxx             | 预定义的令牌（当查询时间超过7天时需要） |
+  | time        | int    | 否   | 3               | 查询最近几天的数据，默认3天 |
 
 - **响应格式:**
 
@@ -90,16 +90,16 @@
     "precision_shooter_kills": 0,
     "pistol_kills": 0,
     "headshots": 0,
-    "total_hits": 0,
     "total_kills": 0,
+    "total_deaths": 0,
+    "total_hits": 0,
+    "total_hits_taken": 0,
     "total_rescues": 0,
-    "total_entries": 10,
-    "hit_rate": 0.5,
-    "headshot_rate": 0.2
+    "total_rescued": 0,
+    "total_entries": 0,
+    "headshot_rate": 0
 }
 ```
-
-- **说明:** 返回处理后的战斗详细统计信息，包括各种击杀、命中和救护次数。
 
 ### 字段说明
 
@@ -115,114 +115,11 @@
 - `precision_shooter_kills`: 狙击枪击杀次数
 - `pistol_kills`: 手枪击杀次数
 - `headshots`: 爆头次数
-- `total_hits`: 命中总次数
 - `total_kills`: 击杀总次数
+- `total_deaths`: 阵亡总次数
+- `total_hits`: 命中总次数
+- `total_hits_taken`: 被命中总次数
 - `total_rescues`: 救护总次数
+- `total_rescued`: 被救护总次数
 - `total_entries`: 数据条目总数
-- `hit_rate`: 命中率（`total_hits`/`total_entries`）
-- `headshot_rate`: 爆头率（`headshots`/`total_hits`）
-
-### 错误响应
-
-- **无效的模式**
-
-```json
-{
-    "error": "Invalid mode"
-}
-```
-
-- **无效的令牌**
-
-```json
-{
-    "error": "Invalid token"
-}
-```
-
-- **无效的数据类型**
-
-```json
-{
-    "error": "Invalid data type"
-}
-```
-
-### 示例
-
-#### 检索服务器信息
-
-- **请求**
-
-```
-GET /userinfo/api?mode=retrieve_servers
-```
-
-- **响应**
-
-```json
-[
-    "dnz1",
-    "hongjing1"
-]
-```
-
-#### 获取战斗列表
-
-- **请求**
-
-```
-GET /userinfo/api?mode=battle_list&steamid=76561199105097854&server=dnz1&data=last_round&limit=200&token=xxx
-```
-
-- **响应**
-
-```json
-[
-    {
-        "id": 551942,
-        "operator_steamid": "76561199105097854",
-        "operator_nickname": " 雪狼001",
-        "action": "ActualDamage",
-        "target_steamid": "76561199105097854",
-        "target_nickname": " 雪狼001",
-        "weapon": "Soldier_RU_Marksman_Desert",
-        "health": 135,
-        "action_time": "2024-05-16 13:11:13.806"
-    },
-    ...
-]
-```
-
-#### 获取战斗详细信息
-
-- **请求**
-
-```
-GET /userinfo/api?mode=battle_details&steamid=76561199105097854&server=dnz1&data=last_round&limit=200&token=xxx
-```
-
-- **响应**
-
-```json
-{
-    "bayonet_kills": 0,
-    "grenade_kills": 0,
-    "light_rocket_kills": 0,
-    "heavy_rocket_kills": 0,
-    "explosive_kills": 0,
-    "rifle_grenade_kills": 0,
-    "rifle_kills": 0,
-    "light_machine_gun_kills": 0,
-    "universal_machine_gun_kills": 0,
-    "precision_shooter_kills": 0,
-    "pistol_kills": 0,
-    "headshots": 0,
-    "total_hits": 0,
-    "total_kills": 0,
-    "total_rescues": 0,
-    "total_entries": 10,
-    "hit_rate": 0.5,
-    "headshot_rate": 0.2
-}
-```
+- `headshot_rate`: 爆头率
